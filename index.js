@@ -10,6 +10,7 @@ require('dotenv').config();
 // Load OpenAI
 const OpenAI = require('openai');
 
+// Create an instance of the OpenAI API, use API key here
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
