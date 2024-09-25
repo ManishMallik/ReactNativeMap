@@ -26,7 +26,7 @@ app.get('/api', (req, res) => {
   res.send({ message: 'Hello from Node.js!' });
 });
 
-// Route to handle GET requests
+// GET route to generate location recommendations
 app.get('/api/location', async (req, res) => {
 
   const inputData = req.query.location;
@@ -79,12 +79,11 @@ app.post('/api/save', (req, res) => {
 app.get('/api/data', (req, res) => {
   const filePath = 'data.json';
 
-  // Check if the file exists
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: 'Data file not found' });
   }
 
-  // Read the file data
+  // Read in the file data and send to frontend
   fs.readFile(filePath, (err, data) => {
     if (err) {
       console.error('Error reading data:', err);
@@ -94,11 +93,11 @@ app.get('/api/data', (req, res) => {
   });
 });
 
+// DELETE route to delete a trip from the JSON file
 app.delete('/api/deleteTrip/:index', (req, res) => {
-  const tripIndex = parseInt(req.params.index, 10); // Get index from URL param and convert to an integer
+  const tripIndex = parseInt(req.params.index, 10);
   const filePath = 'data.json';
 
-  // Check if the file exists
   if (!fs.existsSync(filePath)) {
       return res.status(404).json({ error: 'Data file not found' });
   }
@@ -110,18 +109,15 @@ app.delete('/api/deleteTrip/:index', (req, res) => {
           return res.status(500).json({ error: 'Failed to read data' });
       }
 
-      // Parse the JSON data
       let trips = JSON.parse(data);
 
-      // Check if the index is valid
       if (tripIndex < 0 || tripIndex >= trips.length) {
           return res.status(400).json({ error: 'Invalid trip index' });
       }
 
-      // Remove the trip at the specified index
       trips.splice(tripIndex, 1);
 
-      // Write the updated trips data back to the file
+      // Write the updated data back to the file
       fs.writeFile(filePath, JSON.stringify(trips, null, 2), (err) => {
           if (err) {
               console.error('Error writing data:', err);
